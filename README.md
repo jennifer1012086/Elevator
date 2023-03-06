@@ -1,5 +1,11 @@
 # Elevator
 
+```
+(g++ version 9.2.0)
+$ g++ ./Elevator_Simulator.cpp -o elevator
+$./elevator
+```
+
 The program shows how to dispatch the elevators to different user requests.
 It will choose the closest elevator for the user.
 The ouput of the program shows which of the elevator is chosed and the final result.
