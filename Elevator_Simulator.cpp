@@ -64,7 +64,7 @@ int main()
 
     for(int i=1; i<=2; i++)
     {
-        cout << "elevator " << i << ": " << "[" << i << "]";
+        cout << "elevator " << i << ": " << "[" << 1 << "]";
         for(int j=2; j<=10; j++)
         {
             cout << j  << " ";
