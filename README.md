@@ -3,7 +3,8 @@
 ```
 (g++ version 9.2.0)
 $ g++ ./Elevator_Simulator.cpp -o elevator
-$./elevator
+$./elevator 0      // for test mode
+$./elevator 1      // for user mode
 ```
 
 The program shows how to dispatch the elevators to different user requests.
