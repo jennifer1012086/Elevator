@@ -10,15 +10,30 @@ using namespace std;
 class Elevator
 {
     private:
-        int current_floor;
+        int current_floor_1;
+        int current_floor_2;
     public:
-        int get_floor() { return current_floor; } // define a new method to get the current floor
-        void set_floor(int new_floor) { current_floor = new_floor; } // define a new method to set the current floor
+        int get_floor(int elevator) // define a new method to get the current floor
+        { 
+            if(elevator == 1)
+                return current_floor_1;
+            else
+                return current_floor_2; 
+        } 
+        void set_floor(int elevator, int new_floor) // define a new method to set the current floor
+        { 
+            if(elevator == 1)
+                current_floor_1 = new_floor;
+            else
+                current_floor_2 = new_floor;
+                 
+        } 
         void display_floor() // display the current floor
         {
+            cout << "elevator1 :" << endl;
             for(int i=1; i<=10; i++)
             {
-                if( i == get_floor() )
+                if( i == get_floor(1) )
                 {
                     cout << "[" << i << "] " ;
                     continue;
@@ -26,37 +41,49 @@ class Elevator
                 cout << i << " ";
             }
             cout << endl;
+            cout << "elevator2 :" << endl;
+            for(int i=1; i<=10; i++)
+            {
+                if( i == get_floor(2) )
+                {
+                    cout << "[" << i << "] " ;
+                    continue;
+                }
+                cout << i << " ";
+            }
+            cout << endl << endl;;
         } 
-        void move(int current, int floor) // move the elevator to the destination and show every floor it visited
+        void move(int current, int floor, int elevator) // move the elevator to the destination and show every floor it visited
         {
             if(current > floor) // if the elevator need to go down
             {
                 //cout << "elevator down" << endl; //*************************
-                while(get_floor() > floor) 
+                while(get_floor(elevator) > floor) 
                 {
-                    //display_floor(); //******************************
-                    set_floor(get_floor()-1);
+                    display_floor(); //******************************
+                    sleep(1);
+                    set_floor(elevator, get_floor(elevator)-1);
                 }
 
-                //display_floor(); // display the final floor //**************************
+                display_floor(); // display the final floor //**************************
                 //cout << "elevator arrived" << endl; //******************************
             }
             else // if the elevator need to go up
             {
                 //cout << "elevator up" << endl;
-                while(get_floor() < floor)
+                while(get_floor(elevator) < floor)
                 {
-                    //display_floor(); //*********************************
-                    set_floor(get_floor()+1);
+                    display_floor(); //*********************************
+                    sleep(1);
+                    set_floor(elevator, get_floor(elevator)+1);
                 }
 
-                //display_floor(); // display the final floor //*****************************
+                display_floor(); // display the final floor //*****************************
                 //cout << "elevator arrived" << endl; //**********************************
             }
         }
 };
 
-// check the input floor is valid or not
 bool input_check(string current, string floor)
 {
     if(current != "1" && current != "2" && current != "3" && current != "4" && current != "5"
@@ -72,7 +99,6 @@ bool input_check(string current, string floor)
     return true;
 }
 
-// recompute the result to ensure the elevator move the smallest distance
 bool elevator_simulator_test(int current, int floor, int elevator1_origin, int elevator2_origin, int choice)
 {
     int move_distance1 = 0;
@@ -90,11 +116,10 @@ bool elevator_simulator_test(int current, int floor, int elevator1_origin, int e
 
 int main(int argc, char **argv)
 {
-    Elevator elevator1;
-    Elevator elevator2;
+    Elevator elevator;
 
-    elevator1.set_floor(1); //initialize the elevator at first floor
-    elevator2.set_floor(1); //initialize the elevator at first floor
+    elevator.set_floor(1,1); //initialize the elevator at first floor
+    elevator.set_floor(2,1); //initialize the elevator at first floor
 
     string current_s, floor_s;
     int current, floor;
@@ -102,9 +127,9 @@ int main(int argc, char **argv)
     int choice;
     string user_mode = argv[1]; // 0: test mode, 1: user mode
 
-    srand( time(NULL) ); //random seed
+    srand( time(NULL) );
 
-    for(int i=1; i<=2; i++) // print the initial elevator floor
+    for(int i=1; i<=2; i++)
     {
         cout << "elevator " << i << ": " << "[" << 1 << "]";
         for(int j=2; j<=10; j++)
@@ -117,27 +142,27 @@ int main(int argc, char **argv)
     while(true)
     {
         cout << endl << "Please input the current floor: ";
-        if(user_mode != "0") // user input
+        if(user_mode != "0")
         {
-            cin >> current_s;  
+            cin >> current_s;  // user input
             current = stoi(current_s);
         } 
-        else //test mode (random choose a number from 1-10)
+        else 
         {
-            current = rand()%10+1; 
+            current = rand()%10+1; //test mode
             cout << current <<endl;
             current_s = "1";
         }        
 
         cout << "Please input the destination: ";
-        if(user_mode != "0")// user input
+        if(user_mode != "0")
         {
-            cin >> floor_s;  
+            cin >> floor_s;  // user input
             floor = stoi(floor_s);
         } 
-        else //test mode (random choose a number from 1-10)
+        else 
         {
-            floor = rand()%10+1; 
+            floor = rand()%10+1; //test mode
             cout << floor <<endl;
             floor_s = "1";
         }
@@ -148,34 +173,28 @@ int main(int argc, char **argv)
             continue;
         }
 
-        elevator1_origin = elevator1.get_floor();
-        elevator2_origin = elevator2.get_floor();
+        elevator1_origin = elevator.get_floor(1);
+        elevator2_origin = elevator.get_floor(2);
         
         if (abs(elevator1_origin-current) <= abs(elevator2_origin-current)) //elevator1 is closer
         {
-            cout << "call elevator1" << endl; //choose elevator1
+            cout << "call elevator1" << endl;
             choice = 1;
             
-            elevator1.move(elevator1.get_floor(), current); //move the elevator to the current floor
-            elevator1.move(elevator1.get_floor(), floor); // move the elevator to the destination floor
+            elevator.move(elevator.get_floor(1), current, 1); //move the elevator to the current floor
+            elevator.move(elevator.get_floor(1), floor, 1); // move the elevator to the destination floor
             
-            cout << "elevator 1: " ;
-            elevator1.display_floor();
-            cout << "elevator 2: ";
-            elevator2.display_floor();
+            elevator.display_floor();
         }
         else //elevator2 is closer
         {
-            cout << "call elevator2" << endl; //choose elevator2
+            cout << "call elevator2" << endl;
             choice = 2;
 
-            elevator2.move(elevator2.get_floor(), current); //move the elevator to the current floor
-            elevator2.move(elevator2.get_floor(), floor); // move the elevator to the destination floor
+            elevator.move(elevator.get_floor(2), current, 2); //move the elevator to the current floor
+            elevator.move(elevator.get_floor(2), floor, 2); // move the elevator to the destination floor
             
-            cout << "elevator 1: " ;
-            elevator1.display_floor();
-            cout << "elevator 2: ";
-            elevator2.display_floor();
+            elevator.display_floor();
         }
 
         if( user_mode == "1" ) //test mode
@@ -184,7 +203,7 @@ int main(int argc, char **argv)
             {
                 continue;
             }
-            else //the program will not stop if the recompute result is correct
+            else
             {
                 cout << "current / floor / elevator1_origin / elevator2_origin / choice" << endl;
                 cout << current << floor << elevator1_origin << elevator2_origin << choice << endl;
